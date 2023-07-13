@@ -86,18 +86,18 @@ public class AbstractRunner extends ProjectTestMojo {
                 }
             }
         } else {
-//            log.info("报错信息-开始\n");
+            log.info("报错信息-开始\n");
 //            for(String message:promptInfo.errorMsg){
 //                log.info(promptInfo.errorMsg.toString());
 //            }
-//            log.info("报错信息-结束\n");
+            log.info("报错信息-结束\n");
             int promptTokens = TokenCounter.countToken(promptInfo.unitTest)
                     + TokenCounter.countToken(promptInfo.methodSignature)
                     + TokenCounter.countToken(promptInfo.className)
                     + TokenCounter.countToken(promptInfo.info);
             ErrorProcesser errorProcesser = new ErrorProcesser();
             int allowedTokens = Math.max(Config.maxPromptTokens - promptTokens, Config.minErrorTokens);
-            String processedErrorMsg = errorProcesser.processErrorMessage(promptInfo.errorMsg, allowedTokens);
+            String processedErrorMsg = errorProcesser.processErrorMessage1(promptInfo.errorMsg, allowedTokens);
             log.debug("Allowed tokens: " + allowedTokens);
             log.debug("Processed error message: \n" + processedErrorMsg);
 
@@ -168,8 +168,8 @@ public class AbstractRunner extends ProjectTestMojo {
         Map<String, Object> body = GSON.fromJson(response.body().charStream(), Map.class);
         String content = ((Map<String, String>) ((Map<String, Object>) ((ArrayList<?>) body.get("choices")).get(0)).get("message")).get("content");
         //             测试，打印回答
-        log.info("Role: chatGpt的回答\n");
-        log.info("Content: "+content+"\n\n");
+//        log.info("Role: chatGpt的回答\n");
+//        log.info("Content: "+content+"\n\n");
 //        log.debug(content);
         // 记录token使用情况
         int ResponceCostTokens = TokenCounter.countToken(content);
