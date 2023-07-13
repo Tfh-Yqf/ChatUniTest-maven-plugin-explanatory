@@ -1,0 +1,1 @@
+cmd /k "cd D:\ChatUniTest-maven-plugin-explanatory-\spring\uploadfile\test\test &&  mvn chatunitestexplanatory:project"
