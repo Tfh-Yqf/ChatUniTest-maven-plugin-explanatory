@@ -7,6 +7,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static zju.cst.aces.ProjectTestMojo.log;
 
 /**
  * @author volunze
@@ -58,11 +62,23 @@ public class ErrorProcesser {
                 save.add(error);
                 hashResult.add(tempHash);
             }else{
-                log.info("重复加1")
+                log.info("重复加1");
             }
         }
 
+        for(String saveItem:save){
+            saveItem = removePaths(saveItem);
+        }
+
         return processErrorMessage(save,allowedTokens);
+    }
+
+    public static String removePaths(String text) {
+        String pattern = "/.*?/";
+        Pattern regex = Pattern.compile(pattern);
+        Matcher matcher = regex.matcher(text);
+        String result = matcher.replaceAll("");
+        return result;
     }
 
     public static String calculateHash(String input) {
