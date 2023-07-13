@@ -7,7 +7,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.*;
 
 public class MethodRunner extends ClassRunner {
@@ -82,12 +84,67 @@ public class MethodRunner extends ClassRunner {
     }
 
     /**
+     * 预测消耗token数量
+     * @return
+     * @throws IOException
+     */
+    public List<MethodTokenCostInfo> StartEstimateCostTokenMethod() throws IOException {
+        List<MethodTokenCostInfo> methodTokenCostInfos = new ArrayList<>();
+        if (Config.stopWhenSuccess == false && Config.enableMultithreading == true) {
+            ExecutorService executor = Executors.newFixedThreadPool(Config.testNumber);
+            List<Future<String>> futures = new ArrayList<>();
+            Callable<String> callable = new Callable<String>() {
+                @Override
+                public String call() throws Exception {
+                    methodTokenCostInfos.add(EstimateCostTokens());
+                    return "";
+                }
+            };
+            Future<String> future = executor.submit(callable);
+            futures.add(future);
+            Runtime.getRuntime().addShutdownHook(new Thread() {
+                public void run() {
+                    executor.shutdownNow();
+                }
+            });
+
+            for (Future<String> futureItem : futures) {
+                try {
+                    String result = futureItem.get();
+                    System.out.println(result);
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            executor.shutdown();
+        } else {
+            methodTokenCostInfos.add(EstimateCostTokens());
+
+        }
+        return methodTokenCostInfos;
+    }
+
+
+
+    /**
      * 测试名称：由类名、方法名、方法签名、轮数和后缀组成
      * 执行MaxRounds轮
      * 每一轮：
      *      如果是新的测试：
      *          如果存在依赖方法：
-     *
+     *              generatePromptInfoWithDep()-带有依赖的promptInfo
+     *          如果不存在依赖方法：
+     *              generatePromptInfoWithoutDep()-不带依赖的promptInfo
+     *      生成chatgpt的咒语
+     *      根据咒语去问chatGpt
+     *      解析回答-提取里面的代码-没代码则失败
+     *      修改新的类名
+     *      对包名进行修复
+     *      添加timeout字段
+     *      设置promptInfo的UnitTest的字段
+     *      修复code中缺失的导入语句，然后将code导出
+     *      调用 TestCompiler 编译测试用例，并将编译错误信息保存到文件中。如果编译成功，则表示测试用例生成成功，否则返回false失败并删除刚刚保存的文件
      * @param num
      * @return
      * @throws IOException
@@ -120,6 +177,20 @@ public class MethodRunner extends ClassRunner {
                             .replace(";", ""))
                     .resolve(testName + ".java");
 
+            // 测试，打印prompt
+//            log.info("-----------------------------打印promptInfo------------------------------------"+num);
+//            log.info(classInfo.imports.toString());
+//            log.info(classInfo.packageDeclaration.toString());
+//            log.info(classInfo.classSignature.toString());
+//            log.info(classInfo.constructors.toString());
+//            log.info(classInfo.fields.toString());
+//            log.info("-----------------------------打印prompt------------------------------------"+num);
+//            for(int i=0;i<prompt.size();i++){
+//                log.info("Role: "+prompt.get(i).getRole()+" Name: "+prompt.get(i).getName());
+//                log.info("Content: "+prompt.get(i).getContent()+"\n\n");
+//            }
+//            log.info("结束\n");
+
             String code = parseResponse(response);
             if (code.isEmpty()) {
                 log.info("Test for method < " + methodInfo.methodName + " > extract code failed");
@@ -145,6 +216,42 @@ public class MethodRunner extends ClassRunner {
             }
         }
         return false;
+    }
+
+    /**
+     * 估计每一个method的具体消耗情况
+     * @return
+     * @throws IOException
+     */
+    public MethodTokenCostInfo EstimateCostTokens() throws IOException {
+        MethodTokenCostInfo methodTokenCostInfo = new MethodTokenCostInfo();
+        PromptInfo promptInfo = null;
+        String testName = className + separator + methodInfo.methodName + separator
+                + classInfo.methodSignatures.get(methodInfo.methodSignature) + separator + "Test";
+
+
+        if (methodInfo.dependentMethods.size() > 0) {
+            promptInfo = generatePromptInfoWithDep(classInfo, methodInfo);
+        } else {
+            promptInfo = generatePromptInfoWithoutDep(classInfo, methodInfo);
+        }
+        List<Message> prompt = generateMessages(promptInfo);
+        int codePredictCount = TokenCounter.countToken(classInfo.packageDeclaration)
+                            + TokenCounter.countToken(classInfo.imports.toString())
+                            + 200
+                            + TokenCounter.countToken(classInfo.classSignature)
+                            + TokenCounter.countToken(methodInfo.sourceCode) *2;
+        log.debug("[Prompt]:\n" + prompt.toString());
+        methodTokenCostInfo.FirstAskCost = TokenCounter.countToken(prompt);
+        methodTokenCostInfo.FirstResponseCost = 54 + codePredictCount;
+
+        // 增加错误信息
+        methodTokenCostInfo.FixedAskCost = Config.maxPromptTokens;
+        methodTokenCostInfo.FixedResponseCost = 39 +codePredictCount;
+
+        methodTokenCostInfo.className = classInfo.className;
+        methodTokenCostInfo.methodName = methodInfo.methodName;
+        return methodTokenCostInfo;
     }
 
     /**

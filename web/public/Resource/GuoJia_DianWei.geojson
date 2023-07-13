@@ -1,0 +1,480 @@
+{
+	"type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "id": "places_wt.1",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [121.3363586, 24.938965]
+            },
+            "geometry_name": "the_geom",
+            "properties": {
+                "osm_id": "3451659659",
+                "code": 1004,
+                "fclass": "hamlet",
+                "population": 0,
+                "name": "秦厝"
+            }
+        },
+        {
+            "type": "Feature",
+            "id": 1,
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    121.3363586, 24.938965
+                ]
+            },
+            "properties": {
+                "osm_id": "3451659659",
+                "code": 1004,
+                "fclass": "hamlet",
+                "population": 0,
+                "name": "秦厝"
+            }
+        },
+        {
+            "type": "Feature",
+            "id": 2,
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    96.535234058804804,
+                    21.196867978774264
+                ]
+            },
+            "properties": {
+                "OBJECTID": 2,
+                "name": "缅甸",
+                "ORIG_FID": 1
+            }
+        },
+        {
+            "type": "Feature",
+            "id": 3,
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    104.94154054865743,
+                    12.724685840579127
+                ]
+            },
+            "properties": {
+                "OBJECTID": 3,
+                "name": "柬埔寨",
+                "ORIG_FID": 2
+            }
+        },
+        {
+            "type": "Feature",
+            "id": 4,
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    80.678178377530173,
+                    7.6503251212074019
+                ]
+            },
+            "properties": {
+                "OBJECTID": 4,
+                "name": "斯里兰卡",
+                "ORIG_FID": 3
+            }
+        },
+        {
+            "type": "Feature",
+            "id": 5,
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    66.001111195525311,
+                    33.858776158193223
+                ]
+            },
+            "properties": {
+                "OBJECTID": 5,
+                "name": "阿富汗",
+                "ORIG_FID": 4
+            }
+        },
+        {
+            "type": "Feature",
+            "id": 6,
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    90.464827703635649,
+                    27.406580293745606
+                ]
+            },
+            "properties": {
+                "OBJECTID": 6,
+                "name": "不丹",
+                "ORIG_FID": 5
+            }
+        },
+        {
+            "type": "Feature",
+            "id": 7,
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    79.299356958556871,
+                    22.777366114954305
+                ]
+            },
+            "properties": {
+                "OBJECTID": 7,
+                "name": "印度",
+                "ORIG_FID": 6
+            }
+        },
+        {
+            "type": "Feature",
+            "id": 8,
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    138.63511360760697,
+                    36.104466844369426
+                ]
+            },
+            "properties": {
+                "OBJECTID": 8,
+                "name": "日本",
+                "ORIG_FID": 7
+            }
+        },
+        {
+            "type": "Feature",
+            "id": 9,
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    74.583467489732925,
+                    41.448207123260204
+                ]
+            },
+            "properties": {
+                "OBJECTID": 9,
+                "name": "吉尔吉斯斯坦",
+                "ORIG_FID": 8
+            }
+        },
+        {
+            "type": "Feature",
+            "id": 10,
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    126.56536279825457,
+                    39.811426684893661
+                ]
+            },
+            "properties": {
+                "OBJECTID": 10,
+                "name": "朝鲜",
+                "ORIG_FID": 9
+            }
+        },
+        {
+            "type": "Feature",
+            "id": 11,
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    127.87121405288633,
+                    36.42072137479164
+                ]
+            },
+            "properties": {
+                "OBJECTID": 11,
+                "name": "韩国",
+                "ORIG_FID": 10
+            }
+        },
+        {
+            "type": "Feature",
+            "id": 12,
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    67.265024874198616,
+                    48.146637601344253
+                ]
+            },
+            "properties": {
+                "OBJECTID": 12,
+                "name": "哈萨克斯坦",
+                "ORIG_FID": 11
+            }
+        },
+        {
+            "type": "Feature",
+            "id": 13,
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    103.74979310696637,
+                    18.512943113034282
+                ]
+            },
+            "properties": {
+                "OBJECTID": 13,
+                "name": "老挝",
+                "ORIG_FID": 12
+            }
+        },
+        {
+            "type": "Feature",
+            "id": 14,
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    103.08100727976222,
+                    46.841308843828131
+                ]
+            },
+            "properties": {
+                "OBJECTID": 14,
+                "name": "蒙古",
+                "ORIG_FID": 13
+            }
+        },
+        {
+            "type": "Feature",
+            "id": 15,
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    102.0022016010231,
+                    4.2421225878871951
+                ]
+            },
+            "properties": {
+                "OBJECTID": 15,
+                "name": "马来西亚",
+                "ORIG_FID": 14
+            }
+        },
+        {
+            "type": "Feature",
+            "id": 16,
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    83.933540228898494,
+                    28.266562203782712
+                ]
+            },
+            "properties": {
+                "OBJECTID": 16,
+                "name": "泥泊尔",
+                "ORIG_FID": 15
+            }
+        },
+        {
+            "type": "Feature",
+            "id": 17,
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    69.398666266634962,
+                    29.976437647679347
+                ]
+            },
+            "properties": {
+                "OBJECTID": 17,
+                "name": "巴基斯坦",
+                "ORIG_FID": 16
+            }
+        },
+        {
+            "type": "Feature",
+            "id": 18,
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    145.10194588529441,
+                    -6.4817624273940737
+                ]
+            },
+            "properties": {
+                "OBJECTID": 18,
+                "name": "巴布亚新几内亚",
+                "ORIG_FID": 17
+            }
+        },
+        {
+            "type": "Feature",
+            "id": 19,
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    122.92087345714435,
+                    11.821778252364481
+                ]
+            },
+            "properties": {
+                "OBJECTID": 19,
+                "name": "菲律宾",
+                "ORIG_FID": 18
+            }
+        },
+        {
+            "type": "Feature",
+            "id": 20,
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    103.77450861717898,
+                    1.3332663687479567
+                ]
+            },
+            "properties": {
+                "OBJECTID": 20,
+                "name": "新加坡",
+                "ORIG_FID": 19
+            }
+        },
+        {
+            "type": "Feature",
+            "id": 21,
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    101.04712039019392,
+                    15.157260856803134
+                ]
+            },
+            "properties": {
+                "OBJECTID": 21,
+                "name": "泰国",
+                "ORIG_FID": 20
+            }
+        },
+        {
+            "type": "Feature",
+            "id": 22,
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    72.003841719519812,
+                    38.579329039903314
+                ]
+            },
+            "properties": {
+                "OBJECTID": 22,
+                "name": "塔吉克斯坦\r\n塔吉克斯坦",
+                "ORIG_FID": 21
+            }
+        },
+        {
+            "type": "Feature",
+            "id": 23,
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    59.412346974133584,
+                    39.12708521141343
+                ]
+            },
+            "properties": {
+                "OBJECTID": 23,
+                "name": "土库曼斯坦",
+                "ORIG_FID": 22
+            }
+        },
+        {
+            "type": "Feature",
+            "id": 24,
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -112.41440717615023,
+                    45.671235320653579
+                ]
+            },
+            "properties": {
+                "OBJECTID": 24,
+                "name": "美国",
+                "ORIG_FID": 23
+            }
+        },
+        {
+            "type": "Feature",
+            "id": 25,
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    63.225664788399342,
+                    41.73159774523981
+                ]
+            },
+            "properties": {
+                "OBJECTID": 25,
+                "name": "乌兹别克斯坦",
+                "ORIG_FID": 24
+            }
+        },
+        {
+            "type": "Feature",
+            "id": 26,
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    108.37226103851617,
+                    12.801846443658519
+                ]
+            },
+            "properties": {
+                "OBJECTID": 26,
+                "name": "越南",
+                "ORIG_FID": 25
+            }
+        },
+        {
+            "type": "Feature",
+            "id": 27,
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    119.75186876243345,
+                    -2.9159686153592475
+                ]
+            },
+            "properties": {
+                "OBJECTID": 27,
+                "name": "印度尼西亚\r\n印度尼西亚",
+                "ORIG_FID": 26
+            }
+        },
+        {
+            "type": "Feature",
+            "id": 28,
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    125.81519109489318,
+                    -8.8534796345774112
+                ]
+            },
+            "properties": {
+                "OBJECTID": 28,
+                "name": "东帝汶",
+                "ORIG_FID": 27
+            }
+        }
+    ],
+	"totalFeatures": 980,
+	"numberMatched": 980,
+	"numberReturned": 50,
+	"timeStamp": "2023-04-19T07:55:13.005Z",
+	"crs": {
+		"type": "name",
+		"properties": {
+			"name": "urn:ogc:def:crs:EPSG::4326"
+		}
+	}
+}

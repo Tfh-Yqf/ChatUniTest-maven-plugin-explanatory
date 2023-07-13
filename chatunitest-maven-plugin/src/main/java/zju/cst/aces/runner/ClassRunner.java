@@ -1,10 +1,7 @@
 package zju.cst.aces.runner;
 
 import zju.cst.aces.parser.ClassParser;
-import zju.cst.aces.utils.ClassInfo;
-import zju.cst.aces.utils.Config;
-import zju.cst.aces.utils.MethodInfo;
-import zju.cst.aces.utils.PromptInfo;
+import zju.cst.aces.utils.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,6 +55,60 @@ public class ClassRunner extends AbstractRunner {
     }
 
     /**
+     * token消耗预测
+     * @return
+     * @throws IOException
+     */
+    public List<List<MethodTokenCostInfo>> StartEstimateCostTokenClass() throws IOException {
+        List<List<MethodTokenCostInfo>> methodTokenCostInfos = new ArrayList<>();
+        if (Config.enableMultithreading == true) {
+            ExecutorService executor = Executors.newFixedThreadPool(methodThreads);
+            List<Future<String>> futures = new ArrayList<>();
+            for (String mSig : classInfo.methodSignatures.keySet()) {
+                Callable<String> callable = new Callable<String>() {
+                    @Override
+                    public String call() throws Exception {
+                        MethodInfo methodInfo = getMethodInfo(classInfo, mSig);
+                        if (methodInfo == null) {
+                            return "No parsed info found for " + mSig + " in " + fullClassName;
+                        }
+                        methodTokenCostInfos.add( new MethodRunner(fullClassName, parseOutputPath.toString(), testOutputPath.toString(), methodInfo).StartEstimateCostTokenMethod());
+                        return "Processed " + mSig;
+                    }
+                };
+                Future<String> future = executor.submit(callable);
+                futures.add(future);
+            }
+
+            Runtime.getRuntime().addShutdownHook(new Thread() {
+                public void run() {
+                    executor.shutdownNow();
+                }
+            });
+
+            for (Future<String> future : futures) {
+                try {
+                    String result = future.get();
+                    System.out.println(result);
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            executor.shutdown();
+        } else {
+            for (String mSig : classInfo.methodSignatures.keySet()) {
+                MethodInfo methodInfo = getMethodInfo(classInfo, mSig);
+                if (methodInfo == null) {
+                    continue;
+                }
+                methodTokenCostInfos.add( new MethodRunner(fullClassName, parseOutputPath.toString(), testOutputPath.toString(), methodInfo).StartEstimateCostTokenMethod());
+            }
+        }
+        return methodTokenCostInfos;
+    }
+
+    /**
      * 首先创建一个线程池-大小为methodThreads
      * futures-用于存储每个线程的结果
      * 对于每一个方法签名定义了一个执行方式并提交给线性池并将结果放到futures
@@ -102,6 +153,14 @@ public class ClassRunner extends AbstractRunner {
         executor.shutdown();
     }
 
+    /**
+     * -生成具有依赖关系的测试提示信息的方法-
+     * 首先new一个PromptInfo类
+     * 设置了一个information字段
+     * @param classInfo
+     * @param methodInfo
+     * @return
+     */
     public PromptInfo generatePromptInfoWithoutDep(ClassInfo classInfo, MethodInfo methodInfo) {
         PromptInfo promptInfo = new PromptInfo(
                 false,

@@ -81,12 +81,16 @@ public class ProjectTestMojo
     public Double temperature;
     @Parameter(name = "topP", defaultValue = "1")
     public  int topP;
+
     @Parameter(name = "frequencyPenalty", defaultValue = "0")
     public int frequencyPenalty;
     @Parameter(name = "presencePenalty", defaultValue = "0")
     public int presencePenalty;
     @Parameter(name = "proxy",defaultValue = "null:-1")
     public String proxy;
+
+    @Parameter(name = "maxUseTokens",defaultValue = "10000")
+    public int maxUseTokens;
 
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
     @Component(hint = "default")
@@ -144,9 +148,15 @@ public class ProjectTestMojo
                 }
             }
         }
-//        TestCompiler.restoreTestFolder();
 
-        log.info("\n==========================\n[ChatTester] Generation finished");
+
+        log.info("\n==========================\n[ChatTester] Eventually consumed "
+                + Config.haveAskCostTokens+Config.haveResponseCostTokens
+                + " Tokens\n"
+                + "[ChatTester] Eventually cost "+ EstimateTokenMojo.TokenTransfer2Money(Config.haveAskCostTokens,Config.haveResponseCostTokens) +" $"
+                + "\n==========================\n");
+
+        log.info("\n==========================\n[ChatTester] Generation finished\n==========================\n");
     }
 
     /**
@@ -225,6 +235,9 @@ public class ProjectTestMojo
         Config.setFrequencyPenalty(frequencyPenalty);
         Config.setPresencePenalty(presencePenalty);
         Config.setProxy(proxy);
+        Config.setMaxUseTokens(maxUseTokens);
+        Config.setHaveCostAskTokens(0);
+        Config.setHaveCostResponseTokens(0);
         tmpOutput = String.valueOf(Paths.get(tmpOutput, project.getArtifactId()));
         parseOutput = tmpOutput + File.separator + "class-info";
         parseOutput = parseOutput.replace("/", File.separator);

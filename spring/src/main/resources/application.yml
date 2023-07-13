@@ -1,0 +1,9 @@
+  spring:
+    datasource:
+      username: chatunitest
+      password: 123456
+      url : jdbc:mysql://120.24.238.88:3306/chatunitest?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+      driver-class-name: com.mysql.cj.jdbc.Driver
+
+
+

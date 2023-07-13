@@ -22,6 +22,13 @@ public class AskGPT extends ProjectTestMojo {
     private static String port;
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
+    /**
+     * 可以优化一下-每次都需要配置吗？
+     * 首先获取并配置代理信息，设置client配置
+     * 然后设置请求的一些参数，并处理相应
+     * @param messages
+     * @return
+     */
     public Response askChatGPT(List<Message> messages) {
         setProxyStr();
         if(!hostname.equals("null") && !port.equals("-1")){
@@ -29,6 +36,14 @@ public class AskGPT extends ProjectTestMojo {
         }else {
             setClinet();
         }
+
+        // Token限额
+        int AskCostTokens = TokenCounter.countToken(messages);
+        if(AskCostTokens+Config.haveAskCostTokens+Config.haveResponseCostTokens>Config.maxUseTokens){
+            log.error("\n==========================\n[ChatTester] Reach the maximum Token usage");
+            return null;
+        }
+
         String apiKey = Config.getRandomKey();
         int maxTry = 5;
         while (maxTry > 0) {
@@ -52,8 +67,10 @@ public class AskGPT extends ProjectTestMojo {
 
                 Response response = client.newCall(request).execute();
                 if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-                return response;
+                // 记录token使用情况
+                Config.setHaveCostAskTokens(Config.haveAskCostTokens+AskCostTokens);
 
+                return response;
             } catch (IOException e) {
                 System.out.println("In AskGPT.askChatGPT: " + e);
                 if (e.getMessage().contains("maximum context length is ")) {
@@ -72,11 +89,18 @@ public class AskGPT extends ProjectTestMojo {
         log.debug("AskGPT: Failed to get response\n");
         return null;
     }
+
+    /**
+     * 分割，如127.0.0.1:7890
+     */
     public static void setProxyStr(){
         hostname=Config.proxy.split(":")[0];
         port=Config.proxy.split(":")[1];
     }
 
+    /**
+     * 无代理的连接配置
+     */
     public static void setClinet(){
         //System.out.println("setClinet without proxy");
         client=new OkHttpClient.Builder()
@@ -85,6 +109,10 @@ public class AskGPT extends ProjectTestMojo {
                 .readTimeout(5, TimeUnit.MINUTES)
                 .build();
     }
+
+    /**
+     * 有代理的连接配置
+     */
     public static void setClinetwithProxy(){
         //System.out.println("hostname:"+Config.hostName+" port:"+Config.port);
         Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(hostname, Integer.parseInt(port)));

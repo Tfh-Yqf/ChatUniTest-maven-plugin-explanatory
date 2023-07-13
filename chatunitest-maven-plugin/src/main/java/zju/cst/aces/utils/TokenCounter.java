@@ -4,6 +4,13 @@ import com.knuddels.jtokkit.Encodings;
 import com.knuddels.jtokkit.api.Encoding;
 import com.knuddels.jtokkit.api.EncodingRegistry;
 import com.knuddels.jtokkit.api.ModelType;
+import okhttp3.Response;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static zju.cst.aces.runner.AbstractRunner.GSON;
 
 /**
  * @Author volunze
@@ -23,5 +30,15 @@ public class TokenCounter {
         Encoding encoding = registry.getEncodingForModel(ModelType.GPT_3_5_TURBO);
         int tokenCount = encoding.countTokens(error_message);
         return tokenCount;
+    }
+
+
+
+    public static int countToken(List<Message> messages){
+        int count = 0;
+        for(Message message : messages){
+            count += countToken(message.getContent());
+        }
+        return count;
     }
 }

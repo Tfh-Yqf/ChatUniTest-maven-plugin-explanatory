@@ -14,10 +14,27 @@ public class CodeExtractor {
     private boolean hasSyntacticError;
     private String extractedCode;
 
+    /**
+     * 构造函数-
+     * @param code
+     */
     public CodeExtractor(String code) {
         extractedCode = extract(code);
     }
 
+    /**
+     * 提取代码
+     * 如果是有效代码的话：
+     *      直接赋值
+     * 如果不是：
+     *      提取所有以Java开头的字符段，查看里面是否是包含@Test和class和import并进行修复
+     *      如果还是找不到
+     *      方法一、找包含```java的
+     *      方法二、找包含```的
+     *      方法三、全部查找
+     * @param code
+     * @return
+     */
     public String extract(String code) {
         String extractedCode = "";
 
@@ -134,6 +151,11 @@ public class CodeExtractor {
         return extractedCode;
     }
 
+    /**
+     * 判断是否是有效代码-是否通过编译
+     * @param code
+     * @return
+     */
     private static boolean isSyntacticCorrect(String code) {
         ParseResult<CompilationUnit> parseResult = java_parser.parse(code);
         if (parseResult.isSuccessful()) {
@@ -144,6 +166,12 @@ public class CodeExtractor {
 
     /**
      * Check and fix the syntax.
+     * -对给定的代码字符串进行语法检查，并进行必要的修复以使其成为有效的代码-
+     * 如果需要修复：
+     *      根据{}数量，进行修复
+     *      再判断是否修复完成
+     *      匹配以}结尾后面有@的字符段
+     *      对{}括号进行修复
      */
     public static String syntacticCheck(String code) {
         if (isSyntacticCorrect(code)) {
@@ -190,6 +218,12 @@ public class CodeExtractor {
         }
     }
 
+    /**
+     * -字符串是否含有某个字符-
+     * @param arr
+     * @param target
+     * @return
+     */
     private static boolean contains(String[] arr, char target) {
         for (String c : arr) {
             if (c.charAt(0) == target) {
@@ -199,6 +233,12 @@ public class CodeExtractor {
         return false;
     }
 
+    /**
+     * -计算字符串 str 中目标字符串 target 出现的次数-
+     * @param str
+     * @param target
+     * @return
+     */
     private static int countOccurrences(String str, String target) {
         int count = 0;
         int idx = 0;

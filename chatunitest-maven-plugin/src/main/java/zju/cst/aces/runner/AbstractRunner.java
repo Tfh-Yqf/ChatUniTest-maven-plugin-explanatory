@@ -43,6 +43,13 @@ public class AbstractRunner extends ProjectTestMojo {
         errorOutputPath = parseOutputPath.getParent().resolve("error-message");
     }
 
+    /**
+     * 如果是第一Round，则生成开始的咒语
+     * 否则，生成
+     * @param promptInfo
+     * @return
+     * @throws IOException
+     */
     public List<Message> generateMessages(PromptInfo promptInfo) throws IOException {
         List<Message> messages = new ArrayList<>();
         if (promptInfo.errorMsg == null) { // round 1
@@ -52,6 +59,15 @@ public class AbstractRunner extends ProjectTestMojo {
         return messages;
     }
 
+    /**
+     * 如果promptInfo.errorMsg为空，表示是第一轮生成测试，用户提示包括焦点方法和焦点类的信息。用户提示的格式如下：
+     *      The focal method is `{methodSignature}` in the focal class `{className}`, and their information is
+     * 如果promptInfo.errorMsg不为空，表示是修复错误的阶段，用户提示会包含错误信息和需要修复的单元测试。用户提示的格式如下：
+     *      I need you to fix an error in a unit test, an error occurred while compiling and executing......
+     * @param promptInfo
+     * @return
+     * @throws IOException
+     */
     public String generateUserPrompt(PromptInfo promptInfo) throws IOException {
         String user = null;
         if (promptInfo.errorMsg == null) {
@@ -70,6 +86,11 @@ public class AbstractRunner extends ProjectTestMojo {
                 }
             }
         } else {
+//            log.info("报错信息-开始\n");
+//            for(String message:promptInfo.errorMsg){
+//                log.info(promptInfo.errorMsg.toString());
+//            }
+//            log.info("报错信息-结束\n");
             int promptTokens = TokenCounter.countToken(promptInfo.unitTest)
                     + TokenCounter.countToken(promptInfo.methodSignature)
                     + TokenCounter.countToken(promptInfo.className)
@@ -95,6 +116,11 @@ public class AbstractRunner extends ProjectTestMojo {
         return user;
     }
 
+    /**
+     * chatGpt的咒语 - 开始咒语
+     * @param promptInfo
+     * @return
+     */
     public String generateSystemPrompt(PromptInfo promptInfo) {
         String system = "Please help me generate a whole JUnit test for a focal method in a focal class.\n" +
                 "I will provide the following information of the focal method:\n" +
@@ -130,15 +156,33 @@ public class AbstractRunner extends ProjectTestMojo {
                 .collect(Collectors.joining("\n"));
     }
 
+    /**
+     * body.choices[0].message.content
+     * @param response
+     * @return
+     */
     public String parseResponse(Response response) {
         if (response == null) {
             return "";
         }
         Map<String, Object> body = GSON.fromJson(response.body().charStream(), Map.class);
         String content = ((Map<String, String>) ((Map<String, Object>) ((ArrayList<?>) body.get("choices")).get(0)).get("message")).get("content");
+        //             测试，打印回答
+        log.info("Role: chatGpt的回答\n");
+        log.info("Content: "+content+"\n\n");
+//        log.debug(content);
+        // 记录token使用情况
+        int ResponceCostTokens = TokenCounter.countToken(content);
+        Config.setHaveCostResponseTokens(Config.haveResponseCostTokens+ResponceCostTokens);
+
         return extractCode(content);
     }
 
+    /**
+     * 导出code到指定的路径
+     * @param code
+     * @param savePath
+     */
     public void exportTest(String code, Path savePath) {
         if (!savePath.toAbsolutePath().getParent().toFile().exists()) {
             savePath.toAbsolutePath().getParent().toFile().mkdirs();
@@ -152,10 +196,21 @@ public class AbstractRunner extends ProjectTestMojo {
         }
     }
 
+    /**
+     * 调用CodeExtractor提取代码
+     * @param content
+     * @return
+     */
     public String extractCode(String content) {
         return new CodeExtractor(content).getExtractedCode();
     }
 
+    /**
+     * -修复测试用例中缺失的导入语句-
+     * @param code
+     * @param imports
+     * @return
+     */
     public String repairImports(String code, List<String> imports) {
         String[] codeParts = code.trim().split("\\n", 2);
         String firstLine = codeParts[0];
@@ -169,6 +224,14 @@ public class AbstractRunner extends ProjectTestMojo {
         return firstLine + "\n" + _code;
     }
 
+    /**
+     * -修复包-
+     * 如果code第一行是包的生命则直接return
+     * 如果不是则将其添加到包声明添加到顶部
+     * @param code
+     * @param packageInfo
+     * @return
+     */
     public String repairPackage(String code, String packageInfo) {
         String[] lines = code.split("\n");
         String firstLine = lines[0];
@@ -184,6 +247,12 @@ public class AbstractRunner extends ProjectTestMojo {
         return repairedCode.toString();
     }
 
+    /**
+     * 对不同的Junit版本添加一个timeout = %d的字段
+     * @param testCase
+     * @param timeout
+     * @return
+     */
     public String addTimeout(String testCase, int timeout) {
         // Check JUnit version
         String junit4 = "import org.junit.Test";
@@ -208,6 +277,13 @@ public class AbstractRunner extends ProjectTestMojo {
         return testCase;
     }
 
+    /**
+     * 改名字
+     * @param code
+     * @param className
+     * @param newName
+     * @return
+     */
     public String changeTestName(String code, String className, String newName) {
         String oldName = className + "Test";
         return code.replace(oldName, newName);

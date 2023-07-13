@@ -33,6 +33,10 @@ public class Config {
     public static String[] apiKeys;
     public static String proxy;
 
+    public static int haveAskCostTokens;
+    public static int haveResponseCostTokens;
+    public static int maxUseTokens;
+
     public static Path classMapPath;
 
     public static ReentrantLock lock = new ReentrantLock();
@@ -67,6 +71,14 @@ public class Config {
         } else {
             Config.maxThreads = maxThreads;
         }
+    }
+
+    public static void setHaveCostAskTokens(int haveAskCostTokens){
+        Config.haveAskCostTokens = haveAskCostTokens;
+    }
+    public static void setHaveCostResponseTokens(int haveResponseCostTokens){Config.haveResponseCostTokens = haveResponseCostTokens;}
+    public static void setMaxUseTokens(int maxUseTokens){
+        Config.maxUseTokens = maxUseTokens;
     }
 
     public static void setTestNumber(int testNumber) {
@@ -122,6 +134,10 @@ public class Config {
     }
 
     public static void setProxy(String proxy){Config.proxy=proxy;}
+
+//    public static void setMaxConsumeToken(int maxConsumeToken) {
+//        Config.maxConsumeToken = maxConsumeToken;
+//    }
 
     public static void setClassMapPath(Path classMapPath) {
         Config.classMapPath = classMapPath;
